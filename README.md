@@ -2,7 +2,7 @@
 
 **Post-discharge care coordination.** CareBridge gives discharge coordinators one workspace to assemble a follow-up plan, assign tasks, and turn complex discharge text into a clear checklist that a clinician reviews before anyone else sees it.
 
-> **Status:** early development, following a 12-week roadmap (see below). CareBridge is educational coordination software that uses **synthetic patients only**. It is not a clinical decision support tool, an EHR integration, or a certified or HIPAA-compliant product.
+> **Status:** early development, following an 8-week roadmap (see below). CareBridge is educational coordination software that uses **synthetic patients only**. It is not a clinical decision support tool, an EHR integration, or a certified or HIPAA-compliant product.
 
 ## The problem
 
@@ -82,13 +82,16 @@ flowchart LR
 
 ## Roadmap
 
-| Weeks | Focus |
-|---|---|
-| 1–2 | Research, design and local setup; identity, roles and assignment rules |
-| 3–5 | Synthetic case registry, document ingestion with provenance, care plans and assignments |
-| 6–8 | AI extraction with a mock integration, reviewer workbench, patient portal and staging |
-| 9–10 | Summaries from approved plans, interoperability and reporting |
-| 11–12 | Security, resilience and operations; release and case study |
+| Week | Focus | Status |
+|---|---|---|
+| Week 1 | **Research, design & local bootstrap** — Add care-coordination design docs and React app shell, bootstrap Spring Boot API with health, OpenAPI, Flyway and Compose | Planned |
+| Week 2 | **Identity, roles & assignment policy** — Add care-unit memberships, roles and Spring Security sessions, add React sign-in, role-aware navigation and case-assignment checks | Planned |
+| Week 3 | **Case registry & document ingestion** — Add synthetic patients, discharge cases and versioned case endpoints, add versioned source documents with content hashes and size limits, add upload and side-by-side preview UI | Planned |
+| Week 4 | **Care plans & assignments** — Add plan tasks, assignments and approval entities, add transactional plan publishing with reviewer guard | Planned |
+| Week 5 | **AI extraction & reviewer workbench** — Add structured extraction contract with mock provider, add proposal review state machine with edit diffs, add reviewer queue with source highlights | Planned |
+| Week 6 | **Patient portal & staging** — Link patient-demo accounts to published cases, add mobile-first patient task view with demo warning | Planned |
+| Week 7 | **Approved-plan summaries & interoperability** — Add versioned summaries generated from approved plans, add synthetic FHIR Patient, Encounter and Task mapping, add coordinator reporting dashboard and export | Planned |
+| Week 8 | **Security, resilience & release** — Audit team and case authorization end to end, add access abuse tests and dependency scans, freeze v1 acceptance scope and write release notes, ship synthetic-only demo with mock model | Planned |
 
 ## Getting started
 
