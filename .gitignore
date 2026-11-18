@@ -21,3 +21,7 @@ build/
 # Never commit real or exported patient documents
 uploads/
 exports/
+
+# Python
+__pycache__/
+*.pyc

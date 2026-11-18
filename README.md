@@ -95,4 +95,17 @@ flowchart LR
 
 ## Getting started
 
-Setup instructions will be added once the first services are in place.
+> **No real patient data.** Read the [no-real-PHI notice](docs/security/no-real-phi.md) before running CareBridge.
+
+```bash
+cp .env.example .env                  # set CAREBRIDGE_DB_PASSWORD
+docker compose up -d postgres redis
+cd apps/api && mvn spring-boot:run    # API on :8080
+pnpm install && pnpm dev              # web app on :5173 (from the repo root)
+```
+
+Full steps, tests and reset: [docs/getting-started.md](docs/getting-started.md). Demo accounts and synthetic cases: [packages/synthetic-data](packages/synthetic-data/README.md).
+
+## Documentation
+
+See [docs/README.md](docs/README.md), including [ADR 0001](docs/adr/0001-modular-monolith-synthetic-only.md).
