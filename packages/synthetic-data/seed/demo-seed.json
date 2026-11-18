@@ -1,0 +1,321 @@
+{
+  "careUnits": [
+    {
+      "id": "DEMO-UNIT-01",
+      "name": "Cardiology Step-Down (DEMO)"
+    },
+    {
+      "id": "DEMO-UNIT-02",
+      "name": "General Medicine (DEMO)"
+    },
+    {
+      "id": "DEMO-UNIT-03",
+      "name": "Orthopaedics (DEMO)"
+    }
+  ],
+  "cases": [
+    {
+      "coordinatorId": "DEMO-USR-001",
+      "dischargeOffsetDays": -6,
+      "id": "DEMO-CASE-001",
+      "label": "Case 001",
+      "patientId": "DEMO-PT-001",
+      "reviewerId": "DEMO-USR-003",
+      "status": "active",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-01"
+    },
+    {
+      "coordinatorId": "DEMO-USR-002",
+      "dischargeOffsetDays": 8,
+      "id": "DEMO-CASE-002",
+      "label": "Case 002",
+      "patientId": "DEMO-PT-002",
+      "reviewerId": "DEMO-USR-004",
+      "status": "planning",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-02"
+    },
+    {
+      "coordinatorId": "DEMO-USR-002",
+      "dischargeOffsetDays": -6,
+      "id": "DEMO-CASE-003",
+      "label": "Case 003",
+      "patientId": "DEMO-PT-003",
+      "reviewerId": "DEMO-USR-004",
+      "status": "active",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-03"
+    },
+    {
+      "coordinatorId": "DEMO-USR-001",
+      "dischargeOffsetDays": 9,
+      "id": "DEMO-CASE-004",
+      "label": "Case 004",
+      "patientId": "DEMO-PT-004",
+      "reviewerId": "DEMO-USR-003",
+      "status": "open",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-01"
+    },
+    {
+      "coordinatorId": "DEMO-USR-002",
+      "dischargeOffsetDays": -16,
+      "id": "DEMO-CASE-005",
+      "label": "Case 005",
+      "patientId": "DEMO-PT-005",
+      "reviewerId": "DEMO-USR-004",
+      "status": "active",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-02"
+    },
+    {
+      "coordinatorId": "DEMO-USR-002",
+      "dischargeOffsetDays": 3,
+      "id": "DEMO-CASE-006",
+      "label": "Case 006",
+      "patientId": "DEMO-PT-006",
+      "reviewerId": "DEMO-USR-004",
+      "status": "planning",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-03"
+    },
+    {
+      "coordinatorId": "DEMO-USR-001",
+      "dischargeOffsetDays": 9,
+      "id": "DEMO-CASE-007",
+      "label": "Case 007",
+      "patientId": "DEMO-PT-007",
+      "reviewerId": "DEMO-USR-003",
+      "status": "planning",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-01"
+    },
+    {
+      "coordinatorId": "DEMO-USR-001",
+      "dischargeOffsetDays": 2,
+      "id": "DEMO-CASE-008",
+      "label": "Case 008",
+      "patientId": "DEMO-PT-008",
+      "reviewerId": "DEMO-USR-003",
+      "status": "open",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-01"
+    },
+    {
+      "coordinatorId": "DEMO-USR-002",
+      "dischargeOffsetDays": 1,
+      "id": "DEMO-CASE-009",
+      "label": "Case 009",
+      "patientId": "DEMO-PT-009",
+      "reviewerId": "DEMO-USR-004",
+      "status": "planning",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-03"
+    },
+    {
+      "coordinatorId": "DEMO-USR-001",
+      "dischargeOffsetDays": 5,
+      "id": "DEMO-CASE-010",
+      "label": "Case 010",
+      "patientId": "DEMO-PT-010",
+      "reviewerId": "DEMO-USR-003",
+      "status": "open",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-01"
+    },
+    {
+      "coordinatorId": "DEMO-USR-002",
+      "dischargeOffsetDays": 2,
+      "id": "DEMO-CASE-011",
+      "label": "Case 011",
+      "patientId": "DEMO-PT-011",
+      "reviewerId": "DEMO-USR-004",
+      "status": "planning",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-02"
+    },
+    {
+      "coordinatorId": "DEMO-USR-002",
+      "dischargeOffsetDays": -18,
+      "id": "DEMO-CASE-012",
+      "label": "Case 012",
+      "patientId": "DEMO-PT-012",
+      "reviewerId": "DEMO-USR-004",
+      "status": "closed",
+      "syntheticMarker": true,
+      "unitId": "DEMO-UNIT-03"
+    }
+  ],
+  "dataMode": "SYNTHETIC_ONLY",
+  "demoLogin": {
+    "method": "account-picker",
+    "note": "Local and demo environments only. Pick a seeded account; no passwords are stored in fixtures."
+  },
+  "fixtureVersion": 1,
+  "patients": [
+    {
+      "ageBand": "40-49",
+      "displayName": "Marta Tavel (DEMO)",
+      "id": "DEMO-PT-001",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "50-59",
+      "displayName": "Ines Ambrell (DEMO)",
+      "id": "DEMO-PT-002",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "40-49",
+      "displayName": "Celia Xantos (DEMO)",
+      "id": "DEMO-PT-003",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "70-79",
+      "displayName": "Celia Zelner (DEMO)",
+      "id": "DEMO-PT-004",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "40-49",
+      "displayName": "Greta Xantos (DEMO)",
+      "id": "DEMO-PT-005",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "40-49",
+      "displayName": "Kira Vello (DEMO)",
+      "id": "DEMO-PT-006",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "50-59",
+      "displayName": "Hugo Brisco (DEMO)",
+      "id": "DEMO-PT-007",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "50-59",
+      "displayName": "Tomás Alvarez (DEMO)",
+      "id": "DEMO-PT-008",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "60-69",
+      "displayName": "Olga Brisco (DEMO)",
+      "id": "DEMO-PT-009",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "80+",
+      "displayName": "Pavel Sentro (DEMO)",
+      "id": "DEMO-PT-010",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "50-59",
+      "displayName": "Marta Vello (DEMO)",
+      "id": "DEMO-PT-011",
+      "syntheticMarker": true
+    },
+    {
+      "ageBand": "70-79",
+      "displayName": "Olga Sentro (DEMO)",
+      "id": "DEMO-PT-012",
+      "syntheticMarker": true
+    }
+  ],
+  "seed": 20260105,
+  "users": [
+    {
+      "displayName": "Maya Lindqvist (DEMO)",
+      "email": "maya.coordinator@demo.carebridge.invalid",
+      "handle": "maya.coordinator",
+      "id": "DEMO-USR-001",
+      "linkedCaseIds": [],
+      "role": "coordinator",
+      "unitIds": [
+        "DEMO-UNIT-01"
+      ]
+    },
+    {
+      "displayName": "Omar Haddad (DEMO)",
+      "email": "omar.coordinator@demo.carebridge.invalid",
+      "handle": "omar.coordinator",
+      "id": "DEMO-USR-002",
+      "linkedCaseIds": [],
+      "role": "coordinator",
+      "unitIds": [
+        "DEMO-UNIT-02",
+        "DEMO-UNIT-03"
+      ]
+    },
+    {
+      "displayName": "Dr. Chidi Okafor (DEMO)",
+      "email": "okafor.reviewer@demo.carebridge.invalid",
+      "handle": "okafor.reviewer",
+      "id": "DEMO-USR-003",
+      "linkedCaseIds": [],
+      "role": "reviewer",
+      "unitIds": [
+        "DEMO-UNIT-01"
+      ]
+    },
+    {
+      "displayName": "Dr. Ana Reyes (DEMO)",
+      "email": "reyes.reviewer@demo.carebridge.invalid",
+      "handle": "reyes.reviewer",
+      "id": "DEMO-USR-004",
+      "linkedCaseIds": [],
+      "role": "reviewer",
+      "unitIds": [
+        "DEMO-UNIT-02",
+        "DEMO-UNIT-03"
+      ]
+    },
+    {
+      "displayName": "Lee Novak (DEMO)",
+      "email": "lee.admin@demo.carebridge.invalid",
+      "handle": "lee.admin",
+      "id": "DEMO-USR-005",
+      "linkedCaseIds": [],
+      "role": "admin",
+      "unitIds": []
+    },
+    {
+      "displayName": "Tomás Alvarez (DEMO)",
+      "email": "alvarez.patient@demo.carebridge.invalid",
+      "handle": "alvarez.patient",
+      "id": "DEMO-USR-101",
+      "linkedCaseIds": [
+        "DEMO-CASE-008"
+      ],
+      "role": "patient",
+      "unitIds": []
+    },
+    {
+      "displayName": "Lucía Alvarez (DEMO)",
+      "email": "alvarez.caregiver@demo.carebridge.invalid",
+      "handle": "alvarez.caregiver",
+      "id": "DEMO-USR-102",
+      "linkedCaseIds": [
+        "DEMO-CASE-008"
+      ],
+      "role": "caregiver",
+      "unitIds": []
+    },
+    {
+      "displayName": "Celia Xantos (DEMO)",
+      "email": "case003.patient@demo.carebridge.invalid",
+      "handle": "case003.patient",
+      "id": "DEMO-USR-103",
+      "linkedCaseIds": [
+        "DEMO-CASE-003"
+      ],
+      "role": "patient",
+      "unitIds": []
+    }
+  ]
+}

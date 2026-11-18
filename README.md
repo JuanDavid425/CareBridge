@@ -84,7 +84,7 @@ flowchart LR
 
 | Week | Focus | Status |
 |---|---|---|
-| Week 1 | **Research, design & local bootstrap** — Add care-coordination design docs and React app shell, bootstrap Spring Boot API with health, OpenAPI, Flyway and Compose | Planned |
+| Week 1 | **Research, design & local bootstrap** — Add care-coordination design docs and React app shell, bootstrap Spring Boot API with health, OpenAPI, Flyway and Compose | ✅ Done |
 | Week 2 | **Identity, roles & assignment policy** — Add care-unit memberships, roles and Spring Security sessions, add React sign-in, role-aware navigation and case-assignment checks | Planned |
 | Week 3 | **Case registry & document ingestion** — Add synthetic patients, discharge cases and versioned case endpoints, add versioned source documents with content hashes and size limits, add upload and side-by-side preview UI | Planned |
 | Week 4 | **Care plans & assignments** — Add plan tasks, assignments and approval entities, add transactional plan publishing with reviewer guard | Planned |
@@ -95,4 +95,17 @@ flowchart LR
 
 ## Getting started
 
-Setup instructions will be added once the first services are in place.
+> **No real patient data.** Read the [no-real-PHI notice](docs/security/no-real-phi.md) before running CareBridge.
+
+```bash
+cp .env.example .env                  # set CAREBRIDGE_DB_PASSWORD
+docker compose up -d postgres redis
+cd apps/api && mvn spring-boot:run    # API on :8080
+pnpm install && pnpm dev              # web app on :5173 (from the repo root)
+```
+
+Full steps, tests and reset: [docs/getting-started.md](docs/getting-started.md). Demo accounts and synthetic cases: [packages/synthetic-data](packages/synthetic-data/README.md).
+
+## Documentation
+
+See [docs/README.md](docs/README.md), including [ADR 0001](docs/adr/0001-modular-monolith-synthetic-only.md).
