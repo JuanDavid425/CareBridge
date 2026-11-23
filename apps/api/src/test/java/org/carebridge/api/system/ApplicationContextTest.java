@@ -56,10 +56,20 @@ class ApplicationContextTest {
     }
 
     @Test
-    void otherActuatorEndpointsAreNotExposed() {
-        assertThat(http.getForEntity("/actuator/env", String.class).getStatusCode())
-                .isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(http.getForEntity("/actuator/beans", String.class).getStatusCode())
-                .isEqualTo(HttpStatus.NOT_FOUND);
+    void otherActuatorEndpointsAreNotReadable() {
+        // Not exposed over HTTP, and denied by Spring Security before routing.
+        for (String path : new String[] {"/actuator/env", "/actuator/beans"}) {
+            ResponseEntity<String> response = http.getForEntity(path, String.class);
+            assertThat(response.getStatusCode()).as(path).isEqualTo(HttpStatus.UNAUTHORIZED);
+            assertThat(response.getBody()).as(path).doesNotContain("propertySources", "beans\":");
+        }
+    }
+
+    @Test
+    void securityHeadersAreSet() {
+        ResponseEntity<String> response = http.getForEntity("/api/v1/system/info", String.class);
+
+        assertThat(response.getHeaders().getFirst("X-Frame-Options")).isEqualTo("DENY");
+        assertThat(response.getHeaders().getFirst("X-Content-Type-Options")).isEqualTo("nosniff");
     }
 }

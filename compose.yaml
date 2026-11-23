@@ -40,6 +40,12 @@ services:
       CAREBRIDGE_DB_PASSWORD: ${CAREBRIDGE_DB_PASSWORD}
       CAREBRIDGE_REDIS_HOST: redis
       AI_PROVIDER: ${AI_PROVIDER:-mock}
+      CAREBRIDGE_DEMO_SEED: ${CAREBRIDGE_DEMO_SEED:-false}
+      CAREBRIDGE_DEMO_SEED_FILE: /app/seed/demo-seed.json
+      CAREBRIDGE_DEMO_PASSWORD: ${CAREBRIDGE_DEMO_PASSWORD:-}
+      CAREBRIDGE_SECURE_COOKIES: ${CAREBRIDGE_SECURE_COOKIES:-false}
+    volumes:
+      - ./packages/synthetic-data/seed/demo-seed.json:/app/seed/demo-seed.json:ro
     ports:
       - "127.0.0.1:8080:8080"
     depends_on:

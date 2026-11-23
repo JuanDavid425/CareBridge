@@ -29,7 +29,9 @@ README walkthrough case. Discharge dates are `dischargeOffsetDays` relative to t
 ## Demo login options
 
 Demo environments use an account picker (`demoLogin.method: account-picker`): no passwords are
-stored in fixtures. Accounts use the reserved `demo.carebridge.invalid` domain.
+stored in fixtures. The API loads these accounts when `CAREBRIDGE_DEMO_SEED=true` and they all
+sign in with the local `CAREBRIDGE_DEMO_PASSWORD`. Accounts use the reserved
+`demo.carebridge.invalid` domain.
 
 | Account | Role | Units / cases | Shows |
 |---|---|---|---|

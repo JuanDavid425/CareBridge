@@ -1,4 +1,4 @@
-# Context tests run without PostgreSQL or Redis; migrations are covered by FlywayMigrationIT.
+# Context tests run without PostgreSQL or Redis; migrations and JDBC stores are covered by *IT tests.
 spring:
   autoconfigure:
     exclude:
@@ -20,3 +20,8 @@ management:
 carebridge:
   environment: test
   ai-provider: mock
+  identity:
+    # In-memory accounts from testsupport.TestIdentityConfig; JdbcIdentityStore is covered by IdentityStoreIT.
+    store: memory
+  demo:
+    enabled: false

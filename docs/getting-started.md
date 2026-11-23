@@ -68,8 +68,11 @@ python3 -m carebridge_synthetic check seed/demo-seed.json
 `seed/demo-seed.json` lists the demo care units, accounts and cases, including the Case 008
 walkthrough. The demo accounts and what each one shows are described in
 [packages/synthetic-data/README.md](../packages/synthetic-data/README.md#demo-login-options).
-Sign-in itself arrives with the identity work in week 2; until then the seed is validated in CI
-but not loaded into the database.
+
+With `CAREBRIDGE_DEMO_SEED=true` in `.env`, the API loads the seed's care units, accounts and
+memberships when it starts. Every demo account signs in with `CAREBRIDGE_DEMO_PASSWORD`; see
+[the API README](../apps/api/README.md#sign-in-and-roles) for the endpoints. Cases are loaded
+once the case registry exists.
 
 ## Tests
 
