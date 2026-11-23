@@ -71,8 +71,11 @@ walkthrough. The demo accounts and what each one shows are described in
 
 With `CAREBRIDGE_DEMO_SEED=true` in `.env`, the API loads the seed's care units, accounts and
 memberships when it starts. Every demo account signs in with `CAREBRIDGE_DEMO_PASSWORD`; see
-[the API README](../apps/api/README.md#sign-in-and-roles) for the endpoints. Cases are loaded
-once the case registry exists.
+[the API README](../apps/api/README.md#sign-in-and-roles) for the endpoints, or sign in from
+the web app at `http://localhost:5173/sign-in` (`pnpm dev`, which proxies `/api` to the API).
+Each role lands in its own area: coordinators and reviewers in `/staff`, patients and
+caregivers in `/patient`, administrators in `/admin`. Cases are loaded once the case registry
+exists.
 
 ## Tests
 

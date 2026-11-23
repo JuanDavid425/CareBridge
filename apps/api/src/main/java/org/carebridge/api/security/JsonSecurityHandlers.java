@@ -34,16 +34,20 @@ class JsonSecurityHandlers {
                 write(request, response, HttpStatus.FORBIDDEN, "csrf_token_invalid",
                         "Missing or invalid CSRF token. Reload the page and try again.");
             } else {
-                write(request, response, HttpStatus.FORBIDDEN, "forbidden",
-                        "You do not have access to this resource.");
+                write(request, response, HttpStatus.FORBIDDEN, ApiError.forbidden(RequestIdFilter.of(request)));
             }
         };
     }
 
     void write(HttpServletRequest request, HttpServletResponse response, HttpStatus status, String code,
             String message) throws IOException {
+        write(request, response, status, ApiError.of(code, message, RequestIdFilter.of(request)));
+    }
+
+    private void write(HttpServletRequest request, HttpServletResponse response, HttpStatus status, ApiError body)
+            throws IOException {
         response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        json.writeValue(response.getOutputStream(), ApiError.of(code, message, RequestIdFilter.of(request)));
+        json.writeValue(response.getOutputStream(), body);
     }
 }

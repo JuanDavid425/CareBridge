@@ -22,6 +22,7 @@ public class InMemoryIdentityStore implements IdentityStore {
 
     public static final UnitMembership UNIT_01_COORDINATOR = membership("DEMO-UNIT-01", Role.COORDINATOR);
     public static final UnitMembership UNIT_01_REVIEWER = membership("DEMO-UNIT-01", Role.REVIEWER);
+    public static final UnitMembership UNIT_02_COORDINATOR = membership("DEMO-UNIT-02", Role.COORDINATOR);
 
     static final List<RolePermission> MATRIX = List.of(
             new RolePermission(Role.ADMIN, "audit.read", Scope.GLOBAL),
@@ -46,11 +47,18 @@ public class InMemoryIdentityStore implements IdentityStore {
         String hash = encoder.encode(PASSWORD);
         add("maya.coordinator", Role.COORDINATOR, hash, true, List.of(UNIT_01_COORDINATOR));
         add("okafor.reviewer", Role.REVIEWER, hash, true, List.of(UNIT_01_REVIEWER));
+        add("chen.coordinator", Role.COORDINATOR, hash, true, List.of(UNIT_02_COORDINATOR));
         add("leaving.coordinator", Role.COORDINATOR, hash, true, List.of(UNIT_01_COORDINATOR));
         add("lee.admin", Role.ADMIN, hash, true, List.of());
         add("alvarez.patient", Role.PATIENT, hash, true, List.of());
+        add("alvarez.caregiver", Role.CAREGIVER, hash, true, List.of());
         add("former.coordinator", Role.COORDINATOR, hash, false, List.of());
         add("nopassword.reviewer", Role.REVIEWER, null, true, List.of());
+    }
+
+    /** Account ids are derived from the handle, so fixtures can refer to them before the store exists. */
+    public static UUID idOf(String handle) {
+        return UUID.nameUUIDFromBytes(handle.getBytes());
     }
 
     private static UnitMembership membership(String code, Role role) {
@@ -62,7 +70,7 @@ public class InMemoryIdentityStore implements IdentityStore {
                 .filter(row -> row.role() == role)
                 .map(RolePermission::permission)
                 .collect(Collectors.toSet());
-        Account account = new Account(UUID.nameUUIDFromBytes(handle.getBytes()), handle,
+        Account account = new Account(idOf(handle), handle,
                 handle + "@demo.carebridge.invalid", handle + " (DEMO)", role, hash, active, units, permissions);
         accounts.put(account.id(), account);
     }

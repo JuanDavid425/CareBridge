@@ -24,6 +24,14 @@ public record ApiError(Body error) {
         return new ApiError(new Body(code, message, requestId, Map.of()));
     }
 
+    /**
+     * The one 403 body. Role checks in the filter chain and case-assignment checks in services
+     * both use it, so a client cannot tell which rule refused it.
+     */
+    public static ApiError forbidden(String requestId) {
+        return of("forbidden", "You do not have access to this resource.", requestId);
+    }
+
     public static ApiError validation(Map<String, String> fields, String requestId) {
         return new ApiError(new Body("validation_failed", "Some fields are missing or invalid.", requestId, fields));
     }

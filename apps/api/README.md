@@ -44,6 +44,21 @@ Schema (`V2`, `V3`): `care_units`, `users` (one role each, bcrypt hash or none),
 membership role equal to the user's role) and `role_permissions`, the role matrix with a
 `unit`, `own_case` or `global` scope. The matrix ships with the schema; demo accounts do not.
 
+### Case access
+
+Role checks above only say what a role may do. Which cases it may do it to is decided by
+`CaseAuthorizationService` (`assignment` package), read fresh on every check:
+
+- `unit` permissions (coordinators, reviewers): an active membership in the case's care unit
+  **and** a place on the case's care team. Unit membership alone is not enough.
+- `own_case` permissions (patients, caregivers): the account must be linked to the case.
+- `global` permissions (administrators) never open case content.
+
+`scopeFor(account, permission)` returns the same rule as a `CaseScope` (care units + account
+id) for repository queries, so case lists and single-case checks cannot disagree. A refused
+check is a `403 forbidden` with exactly the same body as a role check; the reason
+(`OUTSIDE_UNIT`, `NOT_ASSIGNED`, `NOT_LINKED`, `NO_PERMISSION`) is only logged, with the request id.
+
 ### Demo accounts
 
 With `CAREBRIDGE_DEMO_SEED=true` the API loads the care units, accounts and memberships from
