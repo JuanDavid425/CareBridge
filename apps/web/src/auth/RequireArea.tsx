@@ -27,6 +27,9 @@ export function RequireArea({ area }: { area: Area }) {
         </div>
       );
     case 'signed-out': {
+      // After "Sign out" go to a plain sign-in page: no ?next=, so the next person to sign in
+      // on this browser is not sent to the previous account's page.
+      if (state.signedOut) return <Navigate to="/sign-in" replace />;
       const next = encodeURIComponent(location.pathname + location.search);
       const expired = state.expired ? '&expired=1' : '';
       return <Navigate to={`/sign-in?next=${next}${expired}`} replace />;

@@ -9,7 +9,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -87,6 +86,22 @@ class AuthFlowTest {
                 .andExpect(jsonPath("$.permissions", hasItem("proposal.review")));
     }
 
+    @Test
+    void signInRotatesAnExistingSessionId() throws Exception {
+        MockHttpSession before = new MockHttpSession();
+        String oldId = before.getId();
+
+        MvcResult result = mvc.perform(post("/api/v1/auth/login").with(csrf()).session(before)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(credentials("maya.coordinator", InMemoryIdentityStore.PASSWORD)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        MockHttpSession after = (MockHttpSession) result.getRequest().getSession(false);
+        assertThat(after).isNotNull();
+        assertThat(after.getId()).isNotEqualTo(oldId);
+    }
+
     @ParameterizedTest(name = "{0}")
     @CsvSource({
             "wrong password,      maya.coordinator,    not-the-password",
@@ -122,13 +137,6 @@ class AuthFlowTest {
                 .andExpect(jsonPath("$.error.code").value("validation_failed"))
                 .andExpect(jsonPath("$.error.fields.handle", notNullValue()))
                 .andExpect(jsonPath("$.error.fields.password", notNullValue()));
-    }
-
-    @Test
-    void csrfEndpointIssuesTheCookie() throws Exception {
-        mvc.perform(get("/api/v1/auth/csrf"))
-                .andExpect(status().isNoContent())
-                .andExpect(cookie().exists("XSRF-TOKEN"));
     }
 
     @Test

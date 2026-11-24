@@ -34,13 +34,26 @@ public class DemoSeedImporter {
     }
 
     public Result importFile(Path seedFile, String demoPassword) throws IOException {
-        if (demoPassword == null || demoPassword.length() < 12) {
-            throw new IllegalArgumentException(
-                    "CAREBRIDGE_DEMO_PASSWORD must be set (at least 12 characters) to seed demo accounts");
-        }
+        checkDemoPassword(demoPassword);
         JsonNode seed = json.readTree(Files.readString(seedFile));
         requireSynthetic(seed);
         return transactions.execute(status -> load(seed, demoPassword));
+    }
+
+    /**
+     * Demo accounts share one password that comes from the environment. Refuse short values and
+     * the {@code change-me…} placeholders from example files, so a copied example never becomes a
+     * working credential on a reachable demo instance.
+     */
+    static void checkDemoPassword(String demoPassword) {
+        if (demoPassword == null || demoPassword.isBlank() || demoPassword.length() < 12) {
+            throw new IllegalArgumentException(
+                    "CAREBRIDGE_DEMO_PASSWORD must be set (at least 12 characters) to seed demo accounts");
+        }
+        if (demoPassword.strip().toLowerCase(java.util.Locale.ROOT).startsWith("change-me")) {
+            throw new IllegalArgumentException(
+                    "CAREBRIDGE_DEMO_PASSWORD still has a placeholder value; choose your own local value");
+        }
     }
 
     private static void requireSynthetic(JsonNode seed) {

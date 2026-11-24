@@ -5,7 +5,8 @@ import type { Me } from './session';
 
 export type AuthState =
   | { status: 'loading' }
-  | { status: 'signed-out'; expired: boolean }
+  /** `signedOut`: the person pressed "Sign out", so the page they were on is not worth returning to. */
+  | { status: 'signed-out'; expired: boolean; signedOut?: boolean }
   | { status: 'signed-in'; me: Me }
   | { status: 'error'; message: string };
 
@@ -55,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await session.signOut();
     } finally {
-      setState({ status: 'signed-out', expired: false });
+      setState({ status: 'signed-out', expired: false, signedOut: true });
     }
   }, []);
 
