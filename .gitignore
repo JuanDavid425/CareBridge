@@ -25,3 +25,7 @@ exports/
 # Python
 __pycache__/
 *.pyc
+
+# Playwright
+playwright-report/
+test-results/

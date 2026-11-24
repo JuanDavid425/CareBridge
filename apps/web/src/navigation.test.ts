@@ -1,27 +1,42 @@
 import { describe, expect, it } from 'vitest';
-import { areaForPath, navigation } from './navigation';
+import { areaForPath, areas, navigation, navItemForPath } from './navigation';
 
 describe('navigation', () => {
-  it('keeps every staff link inside /staff', () => {
-    for (const item of navigation.staff) {
-      expect(areaForPath(item.path)).toBe('staff');
-    }
-  });
-
-  it('never links a staff screen from the patient area', () => {
-    for (const item of navigation.patient) {
-      expect(areaForPath(item.path)).toBe('patient');
+  it('keeps every link inside its own area', () => {
+    for (const area of areas) {
+      for (const item of navigation[area]) {
+        expect(areaForPath(item.path)).toBe(area);
+      }
     }
   });
 
   it('does not treat look-alike prefixes as an area', () => {
     expect(areaForPath('/staffing')).toBeUndefined();
     expect(areaForPath('/patients')).toBeUndefined();
+    expect(areaForPath('/administrator')).toBeUndefined();
     expect(areaForPath('/')).toBeUndefined();
   });
 
   it('uses unique paths', () => {
-    const paths = [...navigation.staff, ...navigation.patient].map((i) => i.path);
+    const paths = areas.flatMap((area) => navigation[area].map((i) => i.path));
     expect(new Set(paths).size).toBe(paths.length);
+  });
+
+  it('gives every link a role-matrix permission', () => {
+    for (const area of areas) {
+      for (const item of navigation[area]) {
+        expect(item.permission).toMatch(/^[a-z]+(\.[a-z_]+)+$/);
+      }
+    }
+  });
+
+  it('never gates patient links on staff permissions', () => {
+    expect(navigation.patient.map((i) => i.permission)).toEqual(['plan.read_published']);
+  });
+
+  it('finds the entry for nested pages', () => {
+    expect(navItemForPath('/staff/review/123')?.label).toBe('Review queue');
+    expect(navItemForPath('/staff/reviewers')).toBeUndefined();
+    expect(navItemForPath('/staff')).toBeUndefined();
   });
 });

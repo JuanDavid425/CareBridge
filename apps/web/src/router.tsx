@@ -1,9 +1,11 @@
 import { createBrowserRouter, Navigate } from 'react-router';
-import { AppShell } from './layout/AppShell';
+import { RequireArea } from './auth/RequireArea';
 import { navigation, type NavItem } from './navigation';
 import { Landing } from './pages/Landing';
 import { NotFound } from './pages/NotFound';
+import { RoleMatrixPage } from './pages/RoleMatrixPage';
 import { SectionPage } from './pages/SectionPage';
+import { SignIn } from './pages/SignIn';
 
 function find(items: NavItem[], path: string): NavItem {
   const item = items.find((i) => i.path === path);
@@ -13,12 +15,14 @@ function find(items: NavItem[], path: string): NavItem {
 
 const staff = (path: string) => find(navigation.staff, path);
 const patient = (path: string) => find(navigation.patient, path);
+const admin = (path: string) => find(navigation.admin, path);
 
 export const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
+  { path: '/sign-in', element: <SignIn /> },
   {
     path: '/staff',
-    element: <AppShell area="staff" />,
+    element: <RequireArea area="staff" />,
     children: [
       { index: true, element: <Navigate to="cases" replace /> },
       {
@@ -37,7 +41,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/patient',
-    element: <AppShell area="patient" />,
+    element: <RequireArea area="patient" />,
     children: [
       { index: true, element: <Navigate to="tasks" replace /> },
       {
@@ -49,6 +53,14 @@ export const router = createBrowserRouter([
           />
         ),
       },
+    ],
+  },
+  {
+    path: '/admin',
+    element: <RequireArea area="admin" />,
+    children: [
+      { index: true, element: <Navigate to="roles" replace /> },
+      { path: 'roles', element: <RoleMatrixPage item={admin('/admin/roles')} /> },
     ],
   },
   { path: '*', element: <NotFound /> },

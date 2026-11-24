@@ -17,7 +17,7 @@ may be used.
 
 ```bash
 cp .env.example .env
-# set CAREBRIDGE_DB_PASSWORD to any local value; keep AI_PROVIDER=mock
+# set CAREBRIDGE_DB_PASSWORD to any local value, choose a CAREBRIDGE_DEMO_PASSWORD (12+ characters, not "change-me…"); keep AI_PROVIDER=mock
 ```
 
 `.env` is ignored by git. Never put real credentials or patient data in it.
@@ -68,8 +68,14 @@ python3 -m carebridge_synthetic check seed/demo-seed.json
 `seed/demo-seed.json` lists the demo care units, accounts and cases, including the Case 008
 walkthrough. The demo accounts and what each one shows are described in
 [packages/synthetic-data/README.md](../packages/synthetic-data/README.md#demo-login-options).
-Sign-in itself arrives with the identity work in week 2; until then the seed is validated in CI
-but not loaded into the database.
+
+With `CAREBRIDGE_DEMO_SEED=true` in `.env`, the API loads the seed's care units, accounts and
+memberships when it starts. Every demo account signs in with `CAREBRIDGE_DEMO_PASSWORD`; see
+[the API README](../apps/api/README.md#sign-in-and-roles) for the endpoints, or sign in from
+the web app at `http://localhost:5173/sign-in` (`pnpm dev`, which proxies `/api` to the API).
+Each role lands in its own area: coordinators and reviewers in `/staff`, patients and
+caregivers in `/patient`, administrators in `/admin`. Cases are loaded once the case registry
+exists.
 
 ## Tests
 
@@ -78,9 +84,22 @@ pnpm typecheck && pnpm test                                   # web
 cd apps/api && mvn test                                       # API, no Docker needed
 cd apps/api && mvn verify                                     # + migration tests (Docker)
 cd packages/synthetic-data && python3 -m unittest discover -s tests
+python3 scripts/check_secrets.py .                            # no credentials in tracked files
 ```
 
-CI runs all of these on every push to `main` and on pull requests.
+The negative-permission end-to-end tests sign in as every demo role and check that the screens
+and the API refuse what the role does not cover. They need the API running with
+`CAREBRIDGE_DEMO_SEED=true` and the same `CAREBRIDGE_DEMO_PASSWORD`:
+
+```bash
+cd apps/web
+pnpm exec playwright install chromium   # once
+CAREBRIDGE_DEMO_PASSWORD=<your value> pnpm e2e   # starts pnpm dev unless CAREBRIDGE_WEB_URL is set
+```
+
+CI runs all of these on every push to `main` and on pull requests. The `e2e` job also applies
+every migration to an empty PostgreSQL (pgvector image), restarts the API to confirm the schema
+validates with nothing left to migrate, and uses a fresh random demo password each run.
 
 ## Reset
 

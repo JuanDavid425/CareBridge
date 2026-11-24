@@ -56,3 +56,92 @@ jobs:
           python-version: "3.12"
       - run: python -m carebridge_synthetic check seed/demo-seed.json
       - run: python -m unittest discover -s tests -v
+
+  secrets:
+    name: No committed credentials
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m unittest discover -s scripts -p 'test_*.py' -v
+      - run: python scripts/check_secrets.py .
+
+  e2e:
+    name: Migrations on PostgreSQL + negative-permission E2E
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.0-pg17
+        env:
+          POSTGRES_DB: carebridge
+          POSTGRES_USER: carebridge
+          # Throwaway database that only exists for this job and listens on the runner.
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U carebridge -d carebridge"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      CAREBRIDGE_DB_URL: jdbc:postgresql://localhost:5432/carebridge
+      CAREBRIDGE_DB_USER: carebridge
+      CAREBRIDGE_DEMO_SEED: "true"
+      CAREBRIDGE_DEMO_SEED_FILE: ${{ github.workspace }}/packages/synthetic-data/seed/demo-seed.json
+      PGHOST: localhost
+      PGUSER: carebridge
+      PGDATABASE: carebridge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Generate a one-off demo password
+        run: |
+          password="ci-$(openssl rand -hex 16)"
+          echo "::add-mask::$password"
+          echo "CAREBRIDGE_DEMO_PASSWORD=$password" >> "$GITHUB_ENV"
+      - name: Build the API
+        working-directory: apps/api
+        run: mvn -B -ntp -DskipTests package
+      - name: Apply every migration to an empty database
+        run: |
+          java -jar apps/api/target/carebridge-api-*.jar > api-first.log 2>&1 &
+          echo $! > api.pid
+          timeout 120 bash -c 'until curl -sf localhost:8080/actuator/health/liveness; do sleep 2; done'
+          expected=$(ls apps/api/src/main/resources/db/migration/V*.sql | wc -l)
+          applied=$(psql -tAc "SELECT count(*) FROM flyway_schema_history WHERE success AND version IS NOT NULL")
+          failed=$(psql -tAc "SELECT count(*) FROM flyway_schema_history WHERE NOT success")
+          echo "migrations: $expected files, $applied applied, $failed failed"
+          test "$applied" -eq "$expected" && test "$failed" -eq 0
+          grep -q "Seeded demo identity data" api-first.log
+          kill "$(cat api.pid)" && wait "$(cat api.pid)" || true
+      - name: Restart on the migrated database (validate, no-op migrate, re-seed)
+        run: |
+          java -jar apps/api/target/carebridge-api-*.jar > api.log 2>&1 &
+          timeout 120 bash -c 'until curl -sf localhost:8080/actuator/health/liveness; do sleep 2; done'
+          grep -q 'Schema "public" is up to date' api.log
+          grep -q "Seeded demo identity data" api.log
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm --filter @carebridge/web exec playwright install --with-deps chromium
+      - name: Negative-permission E2E
+        run: pnpm --filter @carebridge/web e2e
+        env:
+          CI: "true"
+      - name: Keep the Playwright report and API log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report
+          path: |
+            apps/web/playwright-report/
+            api-first.log
+            api.log
+          retention-days: 7
