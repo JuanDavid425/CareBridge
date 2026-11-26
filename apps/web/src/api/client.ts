@@ -68,11 +68,15 @@ function parse(text: string): unknown {
   }
 }
 
-export async function apiFetch<T>(
-  path: string,
-  { method = 'GET', body }: { method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'; body?: unknown } = {},
-): Promise<T> {
-  const headers: Record<string, string> = { Accept: 'application/json' };
+export interface ApiFetchOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  body?: unknown;
+  /** Extra request headers, such as `If-Match` for versioned writes. */
+  headers?: Record<string, string>;
+}
+
+export async function apiFetch<T>(path: string, { method = 'GET', body, headers: extra = {} }: ApiFetchOptions = {}): Promise<T> {
+  const headers: Record<string, string> = { ...extra, Accept: 'application/json' };
   let response: Response;
   try {
     if (method !== 'GET') {

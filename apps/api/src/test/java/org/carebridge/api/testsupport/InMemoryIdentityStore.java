@@ -15,7 +15,7 @@ import org.carebridge.api.identity.RolePermission.Scope;
 import org.carebridge.api.identity.UnitMembership;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-/** Accounts for web-layer tests, mirroring the demo seed and the V3 role matrix. */
+/** Accounts for web-layer tests, mirroring the demo seed and the role matrix (V3 + V4). */
 public class InMemoryIdentityStore implements IdentityStore {
 
     public static final String PASSWORD = "test-password-123";
@@ -32,6 +32,7 @@ public class InMemoryIdentityStore implements IdentityStore {
             new RolePermission(Role.COORDINATOR, "audit.read", Scope.UNIT),
             new RolePermission(Role.COORDINATOR, "case.create", Scope.UNIT),
             new RolePermission(Role.COORDINATOR, "case.read", Scope.UNIT),
+            new RolePermission(Role.COORDINATOR, "case.update", Scope.UNIT),
             new RolePermission(Role.COORDINATOR, "document.upload", Scope.UNIT),
             new RolePermission(Role.COORDINATOR, "task.assign", Scope.UNIT),
             new RolePermission(Role.COORDINATOR, "task.edit", Scope.UNIT),

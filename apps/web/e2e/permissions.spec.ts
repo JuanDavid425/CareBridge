@@ -97,6 +97,7 @@ test('a patient only gets the patient portal', async ({ page }) => {
   await expectDenied(page, '/staff/review', differentAccount);
   await expectDenied(page, '/admin/roles', differentAccount);
   await expectForbidden(page, '/api/v1/me/units');
+  await expectForbidden(page, '/api/v1/cases');
   await expectForbidden(page, '/api/v1/admin/role-matrix');
 });
 
@@ -115,6 +116,7 @@ test('an administrator manages roles but never opens care-team pages', async ({ 
   await expectDenied(page, '/staff/cases', differentAccount);
   await expectDenied(page, '/patient/tasks', differentAccount);
   await expectForbidden(page, '/api/v1/me/units');
+  await expectForbidden(page, '/api/v1/cases');
 });
 
 test('signing out ends access to the API', async ({ page }) => {

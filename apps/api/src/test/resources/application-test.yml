@@ -23,5 +23,8 @@ carebridge:
   identity:
     # In-memory accounts from testsupport.TestIdentityConfig; JdbcIdentityStore is covered by IdentityStoreIT.
     store: memory
+  cases:
+    # testsupport.InMemoryCaseStore; JdbcCaseStore is covered by CaseStoreIT.
+    store: memory
   demo:
     enabled: false

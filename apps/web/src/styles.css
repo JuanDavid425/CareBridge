@@ -156,7 +156,10 @@ button:disabled {
 }
 
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.button-link:focus-visible {
   outline: 3px solid #f2a900;
   outline-offset: 2px;
 }
@@ -247,4 +250,265 @@ input:focus-visible {
   text-align: left;
   padding: 0.4rem 0.8rem;
   border-bottom: 1px solid #d8dee4;
+}
+
+/* ---- Case registry ---------------------------------------------------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.muted {
+  color: #57606a;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border-radius: 4px;
+  background: #0b5cad;
+  color: #fff;
+  text-decoration: none;
+}
+
+.button-secondary {
+  background: #fff;
+  color: #0b5cad;
+}
+
+.cases__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d8dee4;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.filters label,
+.case-form label {
+  font-weight: 600;
+}
+
+.filters__search,
+.filters__due {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.filters__statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.filters__statuses legend {
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: 0.25rem;
+}
+
+.filters__statuses label {
+  font-weight: normal;
+}
+
+.filters input[type='search'],
+.filters select,
+.case-form input,
+.case-form select,
+.case-form textarea {
+  font: inherit;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #8c959f;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.skeleton-row {
+  height: 2.25rem;
+  margin-bottom: 0.4rem;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #eef1f4 0%, #f7f8fa 50%, #eef1f4 100%);
+}
+
+.case-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.case-table th,
+.case-table td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #d8dee4;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: #eef1f4;
+  color: #24292f;
+}
+
+.status--planning {
+  background: #fff4d6;
+}
+
+.status--review {
+  background: #f3e8ff;
+}
+
+.status--active {
+  background: #dafbe1;
+}
+
+.status--closed {
+  background: #eaeef2;
+  color: #57606a;
+}
+
+.overdue {
+  color: #a40e26;
+  font-weight: 600;
+}
+
+.pager {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.case-detail {
+  max-width: 48rem;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1.25rem;
+  padding: 1rem;
+  border: 1px solid #d8dee4;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.facts dt {
+  font-weight: 600;
+}
+
+.facts dd {
+  margin: 0;
+}
+
+.plain-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 0.75rem 0;
+}
+
+.case-form {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 32rem;
+  margin: 1rem 0;
+}
+
+.field-error {
+  margin: 0 0 0.4rem;
+  color: #a40e26;
+}
+
+[aria-invalid='true'] {
+  border-color: #a40e26;
+}
+
+.history {
+  padding-left: 1.25rem;
+}
+
+/* Narrow screens: the case table becomes one card per case. */
+@media (max-width: 40rem) {
+  /* Let the main column shrink to the viewport instead of growing to its widest child. */
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shell__header,
+  .shell__account {
+    flex-wrap: wrap;
+  }
+
+  .filters input[type='search'] {
+    flex: 1 1 10rem;
+    min-width: 0;
+  }
+
+  .case-table,
+  .case-table tbody {
+    display: block;
+  }
+
+  .case-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .case-table tr {
+    display: block;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #d8dee4;
+  }
+
+  .case-table td {
+    display: flex;
+    gap: 0.5rem;
+    border: none;
+    padding: 0.15rem 0.75rem;
+  }
+
+  .case-table td::before {
+    content: attr(data-label);
+    min-width: 7.5rem;
+    font-weight: 600;
+  }
+
+  .facts {
+    grid-template-columns: 1fr;
+  }
 }

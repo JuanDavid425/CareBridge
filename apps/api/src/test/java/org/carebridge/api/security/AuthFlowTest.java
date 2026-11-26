@@ -166,7 +166,7 @@ class AuthFlowTest {
     void adminReadsTheRoleMatrix() throws Exception {
         mvc.perform(get("/api/v1/admin/role-matrix").session(signIn("lee.admin")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(15)))
+                .andExpect(jsonPath("$", hasSize(16)))
                 .andExpect(jsonPath("$[?(@.role == 'patient')].scope", containsInAnyOrder("own_case")));
     }
 

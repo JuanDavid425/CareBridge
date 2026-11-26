@@ -1,7 +1,7 @@
 # Role matrix
 
 Every account has exactly one role. What a role may do is stored in the `role_permissions` table
-(migration `V3__role_permissions.sql`), and the API reads it from there; the React app only uses
+(migrations `V3__role_permissions.sql` and `V4__discharge_cases.sql`), and the API reads it from there; the React app only uses
 it to decide which links to show. `RoleMatrixDocTest` fails the build if the table below and the
 migration disagree.
 
@@ -20,6 +20,7 @@ migration disagree.
 |---|---|---|
 | coordinator | case.read | unit |
 | coordinator | case.create | unit |
+| coordinator | case.update | unit |
 | coordinator | document.upload | unit |
 | coordinator | task.edit | unit |
 | coordinator | task.assign | unit |
@@ -38,7 +39,8 @@ migration disagree.
 What is deliberately missing:
 
 - Coordinators cannot `proposal.review` or `plan.publish`: whoever writes a plan does not approve it.
-- Reviewers cannot `case.create`, `document.upload` or `task.edit`; they correct proposals through review.
+- Reviewers cannot `case.create`, `case.update`, `document.upload` or `task.edit`; they correct
+  proposals through review and decide whether a case leaves review (`plan.publish`).
 - Patients and caregivers hold nothing with `unit` scope, so no staff screen or draft is reachable.
 - Administrators have no `case.read`. They manage accounts and units and read the audit trail,
   but never see case content.
@@ -50,7 +52,10 @@ What is deliberately missing:
 | Anything except health, OpenAPI, `GET /api/v1/system/info`, `GET /api/v1/auth/csrf`, `POST /api/v1/auth/login` | Signed in | 401 `unauthenticated` |
 | `/api/v1/admin/**` | Role `admin` | 403 `forbidden` |
 | `GET /api/v1/me/units` | Role `coordinator` or `reviewer` | 403 `forbidden` |
-| Case endpoints (from week 3) | `CaseAuthorizationService`: permission in the matrix, then scope (unit membership + care team, or linked case) | 403 `forbidden` |
+| `/api/v1/cases/**`, `/api/v1/care-units/**` | Role `coordinator` or `reviewer` | 403 `forbidden` |
+| `GET /api/v1/cases` | Only cases in the caller's units where the caller is on the care team (`case.read` scope as the WHERE clause) | — (filtered) |
+| `GET/PATCH /api/v1/cases/{id}`, `POST …/status`, `GET …/events` | `CaseAuthorizationService`: `case.read`, then `case.update` (edits, intake/planning moves, closing), `plan.publish` (leaving review) or `audit.read` (history) on that case | 403 `forbidden` (404 `not_found` for unknown ids) |
+| `POST /api/v1/cases`, `GET /api/v1/care-units/{id}/reviewers` | `case.create` with an active membership in that unit | 403 `forbidden` |
 | State-changing request without a matching `X-XSRF-TOKEN` header | CSRF | 403 `csrf_token_invalid` |
 
 A case denial returns exactly the same 403 envelope as a role denial; the reason (not a member,

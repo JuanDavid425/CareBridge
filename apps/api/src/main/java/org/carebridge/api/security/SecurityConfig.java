@@ -45,7 +45,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers("/api/v1/me/units")
+                        .requestMatchers("/api/v1/me/units", "/api/v1/cases", "/api/v1/cases/**",
+                                "/api/v1/care-units/**")
                                 .hasAnyRole(Role.COORDINATOR.name(), Role.REVIEWER.name())
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf

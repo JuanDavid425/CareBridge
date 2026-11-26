@@ -1,6 +1,7 @@
 package org.carebridge.api.identity;
 
 import java.nio.file.Path;
+import java.time.Clock;
 import org.carebridge.api.config.CareBridgeProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +26,11 @@ public class DemoAccountSeeder implements ApplicationRunner {
     private final DemoSeedImporter importer;
 
     public DemoAccountSeeder(DemoProperties demo, CareBridgeProperties properties, JdbcClient jdbc,
-            PasswordEncoder passwordEncoder, PlatformTransactionManager transactionManager) {
+            PasswordEncoder passwordEncoder, PlatformTransactionManager transactionManager, Clock clock) {
         this.demo = demo;
         this.properties = properties;
-        this.importer = new DemoSeedImporter(jdbc, passwordEncoder, new TransactionTemplate(transactionManager));
+        this.importer = new DemoSeedImporter(jdbc, passwordEncoder, new TransactionTemplate(transactionManager),
+                clock);
     }
 
     @Override
@@ -39,7 +41,7 @@ public class DemoAccountSeeder implements ApplicationRunner {
         Path seedFile = Path.of(demo.seedFile());
         DemoSeedImporter.Result result = importer.importFile(seedFile, demo.password());
         // Counts only: account handles and emails are not logged.
-        log.info("Seeded demo identity data: {} care units, {} accounts, {} memberships",
-                result.careUnits(), result.accounts(), result.memberships());
+        log.info("Seeded demo data: {} care units, {} accounts, {} memberships, {} patients, {} cases",
+                result.careUnits(), result.accounts(), result.memberships(), result.patients(), result.cases());
     }
 }

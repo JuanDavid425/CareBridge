@@ -2,6 +2,9 @@ import { createBrowserRouter, Navigate } from 'react-router';
 import { RequireArea } from './auth/RequireArea';
 import { navigation, type NavItem } from './navigation';
 import { Landing } from './pages/Landing';
+import { CaseCreatePage } from './pages/cases/CaseCreatePage';
+import { CaseDetailPage } from './pages/cases/CaseDetailPage';
+import { CaseListPage } from './pages/cases/CaseListPage';
 import { NotFound } from './pages/NotFound';
 import { RoleMatrixPage } from './pages/RoleMatrixPage';
 import { SectionPage } from './pages/SectionPage';
@@ -25,10 +28,9 @@ export const router = createBrowserRouter([
     element: <RequireArea area="staff" />,
     children: [
       { index: true, element: <Navigate to="cases" replace /> },
-      {
-        path: 'cases',
-        element: <SectionPage item={staff('/staff/cases')} emptyText="No cases assigned to you yet." />,
-      },
+      { path: 'cases', element: <CaseListPage item={staff('/staff/cases')} /> },
+      { path: 'cases/new', element: <CaseCreatePage /> },
+      { path: 'cases/:caseId', element: <CaseDetailPage /> },
       {
         path: 'review',
         element: <SectionPage item={staff('/staff/review')} emptyText="Nothing is waiting for review." />,

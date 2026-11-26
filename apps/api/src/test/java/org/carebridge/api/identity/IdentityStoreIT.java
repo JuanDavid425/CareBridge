@@ -6,35 +6,31 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
-import org.flywaydb.core.Flyway;
+import javax.sql.DataSource;
+import org.carebridge.api.testsupport.PostgresForTests;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
-/** Identity schema constraints, the role matrix, JdbcIdentityStore and the demo seed import. */
-@Testcontainers(disabledWithoutDocker = true)
+/**
+ * Identity schema constraints, the role matrix, JdbcIdentityStore and the demo seed import.
+ * Needs Docker or CAREBRIDGE_IT_DB_URL (see {@link PostgresForTests}).
+ */
 class IdentityStoreIT {
 
     private static final Path SEED = Path.of("../../packages/synthetic-data/seed/demo-seed.json");
     private static final String DEMO_PASSWORD = "local-demo-password";
 
-    @Container
-    private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>(
-            DockerImageName.parse("pgvector/pgvector:0.8.0-pg17").asCompatibleSubstituteFor("postgres"));
-
-    private static DriverManagerDataSource dataSource;
+    private static PostgresForTests postgres;
+    private static DataSource dataSource;
     private static JdbcClient jdbc;
     private static final PasswordEncoder ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
@@ -43,13 +39,16 @@ class IdentityStoreIT {
 
     @BeforeAll
     static void migrate() {
-        Flyway.configure()
-                .dataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())
-                .locations("classpath:db/migration")
-                .load()
-                .migrate();
-        dataSource = new DriverManagerDataSource(POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword());
+        postgres = PostgresForTests.startMigrated();
+        dataSource = postgres.dataSource();
         jdbc = JdbcClient.create(dataSource);
+    }
+
+    @AfterAll
+    static void stop() {
+        if (postgres != null) {
+            postgres.close();
+        }
     }
 
     @BeforeEach
@@ -89,7 +88,8 @@ class IdentityStoreIT {
 
     @Test
     void roleMatrixIsSeededByTheMigration() {
-        assertThat(store.roleMatrix()).hasSize(15)
+        assertThat(store.roleMatrix()).hasSize(16)
+                .contains(new RolePermission(Role.COORDINATOR, "case.update", RolePermission.Scope.UNIT))
                 .contains(new RolePermission(Role.REVIEWER, "proposal.review", RolePermission.Scope.UNIT))
                 .contains(new RolePermission(Role.PATIENT, "plan.read_published", RolePermission.Scope.OWN_CASE))
                 .noneMatch(row -> row.role() == Role.ADMIN && row.permission().startsWith("case."))
@@ -166,7 +166,7 @@ class IdentityStoreIT {
         DemoSeedImporter.Result first = importer.importFile(SEED, DEMO_PASSWORD);
         DemoSeedImporter.Result second = importer.importFile(SEED, DEMO_PASSWORD);
 
-        assertThat(first).isEqualTo(new DemoSeedImporter.Result(3, 8, 6));
+        assertThat(first).isEqualTo(new DemoSeedImporter.Result(3, 8, 6, 12, 12));
         assertThat(second).isEqualTo(first);
         assertThat(jdbc.sql("SELECT count(*) FROM users WHERE external_ref LIKE 'DEMO-USR-%'")
                 .query(Integer.class).single()).isEqualTo(8);
